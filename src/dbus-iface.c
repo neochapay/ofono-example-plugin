@@ -5,7 +5,10 @@
 #define EXAMPLE_DBUS_INTERFACE "org.nemomobile.ofono.Example"
 
 static DBusMessage *example_meow(DBusConnection *conn, DBusMessage *msg, void *data) {
-    ofono_info("Some cat say meow!");
+    const char *talk;
+    dbus_message_get_args(msg, NULL, DBUS_TYPE_STRING, &talk, DBUS_TYPE_INVALID);
+
+    ofono_info("Some cat say %s !", talk);
     return dbus_message_new_method_return(msg);
 }
 
@@ -19,9 +22,9 @@ static const GDBusSignalTable example_dbus_signals[] = {};
 /*
 If you call in console 
 
-dbus-send --system --print-reply --dest=org.ofono /Example org.nemomobile.ofono.Example.SayMeow string:""
+dbus-send --system --print-reply --dest=org.ofono /Example org.nemomobile.ofono.Example.SayMeow string:"meaow"
 
-You can se in debug ofono log message "Some cat say meow"
+You can se in debug ofono log message "Some cat say meow !"
 */
 
 int register_example_dbus() {
