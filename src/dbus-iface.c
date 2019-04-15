@@ -1,22 +1,27 @@
 #include <ofono/dbus.h>
 #include <ofono/gdbus.h>
+#include <ofono/log.h>
 
 #define EXAMPLE_DBUS_INTERFACE "org.nemomobile.ofono.Example"
 
-static const GDBusMethodTable example_dbus_methods[] = {};
+static DBusMessage *example_meow(DBusConnection *conn, DBusMessage *msg, void *data) {
+    ofono_info("Some cat say meow!");
+    return dbus_message_new_method_return(msg);
+}
+
+static const GDBusMethodTable example_dbus_methods[] = {
+    { GDBUS_METHOD("SayMeow", GDBUS_ARGS({"path", "s"}), NULL, example_meow) },
+    { }
+};
+
 static const GDBusSignalTable example_dbus_signals[] = {};
 
 /*
 If you call in console 
 
-#dbus-send --system --print-reply --dest=org.ofono / org.freedesktop.DBus.Introspectable.Introspect
+dbus-send --system --print-reply --dest=org.ofono /Example org.nemomobile.ofono.Example.SayMeow string:""
 
-you can see - we are regestry /Example interface. But if we call methods of this interface
-
-#dbus-send --system --print-reply --dest=org.ofono /Example org.freedesktop.DBus.Introspectable.Introspect
-
-We get error becouse we don;'t have any methods ^_^
-
+You can se in debug ofono log message "Some cat say meow"
 */
 
 int register_example_dbus() {
@@ -36,3 +41,4 @@ int register_example_dbus() {
 void free_example_dbus() {
 
 }
+
